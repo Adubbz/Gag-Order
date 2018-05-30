@@ -1,0 +1,8 @@
+gag-order.pfs0
+gag-order.nso
+gag-order.nro
+gag-order.nacp
+gag-order.elf
+build/
+save_files/
+.vscode/settings.json

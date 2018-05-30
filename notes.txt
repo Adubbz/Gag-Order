@@ -1,0 +1,12 @@
+4.1.0:
+- Vulnerability status check: 710008281C
+- Notable immediate: #2098
+
+Safe Versions:
+- 5.0.2: 2070
+- 4.1.0 Nagged: 2070
+- 4.1.0 Unnagged: 2070
+- 4.0.1 Unnagged: 2070
+
+Misc Info:
+- ns_ssversion tid: 0x8000000000000049

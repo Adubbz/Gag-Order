@@ -6,6 +6,63 @@
 
 #define BUF_SIZE 0x50000
 
+u8 verifyNagBytes(const char *save_path, u32 bytes)
+{
+    FILE *f = fopen(save_path, "rb");
+
+    if (f == NULL)
+    {
+        printf("Failed to open save file to check bytes!\n");
+        return 1;
+    }
+
+    fseek(f, 0x8, 0);
+
+    u32 nagBytes;
+    fread(&nagBytes, sizeof(u32), 1, f);
+    fclose(f);
+
+    if (nagBytes == bytes)
+    {
+        printf("Valid nag bytes detected: 0x%02x\n", nagBytes);
+        return 0;
+    }
+    else
+    {
+        printf("Invalid nag bytes detected: 0x%02x\nBailing out...\n", nagBytes);
+        return 1;
+    }
+}
+
+u8 patchNagBytes(const char *save_path)
+{
+    FILE *f = fopen(save_path, "wb");
+
+    if (f == NULL)
+    {
+        printf("Failed to open save file to patch bytes!\n");
+        return 1;
+    }
+
+    fseek(f, 0x8, 0);
+    u32 unnagBytes = 0x100000C8;
+    printf("Patching nag bytes to 0x%02x\n", unnagBytes);
+    fwrite(&unnagBytes, sizeof(u32), 1, f);
+    fclose(f);
+
+    fsdevCommitDevice("ns_ssversion");
+
+    printf("Verifying patching...\n");
+    if (verifyNagBytes(save_path, unnagBytes) == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
 void copyFile(const char *src_path, const char *dst_path)
 {
     FILE *src = fopen(src_path, "rb");
@@ -30,10 +87,10 @@ void copyFile(const char *src_path, const char *dst_path)
     fclose(src);
     fclose(dst);
 
-    // Check if the dest path starts with save:/
-    if (strncmp(dst_path, "save:/", strlen("save:/")) == 0)
+    // Check if the dest path starts with ns_ssversion:/
+    if (strncmp(dst_path, "ns_ssversion:/", strlen("ns_ssversion:/")) == 0)
     {
-        fsdevCommitDevice("save");
+        fsdevCommitDevice("ns_ssversion");
     }
 }
 
@@ -52,6 +109,7 @@ int listDir(const char *path, dir_ent_t **dir_entries_out)
         entry_count++;
     }
 
+    // rewinddir appears to be broken
     closedir(dir);
     dir = opendir(path);
 

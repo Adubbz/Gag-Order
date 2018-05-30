@@ -102,22 +102,17 @@ int main(int argc, char **argv)
         printf("Successfully mounted ns_ssversion.\n");
     }
 
-    dir_ent_t *dir_entries;
-    int dir_entry_count = listDir("ns_ssversion:/", &dir_entries);
-
-    printf("Listing entry names...\n");
-    for (int i = 0; i < dir_entry_count; i++)
-    {
-        printf("Entry name: %s\n", dir_entries[i].name);
-    }
-
-    free(dir_entries);
-
-    printf("Copying to sd card...\n");
-    copyFile("ns_ssversion:/entry", "sdmc:/ns_ssversion_entry");
+    printf("Backing up current ns_ssversion entry file to sd card...\n");
+    copyFile("ns_ssversion:/entry", "sdmc:/entry-ns_ssversion_bak");
     printf("Done!\n");
 
+    if (verifyNagBytes("ns_ssversion:/entry", 0x14020028) == 0)
+    {
+        patchNagBytes("ns_ssversion:/entry");
+    }
+
     fsdevUnmountDevice("ns_ssversion");
+    printf("Done!\n");
 
     await_input:
     printf("Press + to return to hbmenu.\n");

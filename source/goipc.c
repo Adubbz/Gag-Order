@@ -6,13 +6,13 @@ Result goipcInitialize(void)
 
     if (R_FAILED(rc = smGetService(&g_pmshellSrv, "pm:shell")))
     {
-        printf("Could not obtain pm:shell service. Error code: 0x%02x\n", rc);
+        printf("Could not obtain pm:shell service. Error code: 0x%08x\n", rc);
         return rc;
     }
 
     if (R_FAILED(rc = smGetService(&g_setsysSrv, "set:sys")))
     {
-        printf("Could not obtain set:sys service. Error code: 0x%02x\n", rc);
+        printf("Could not obtain set:sys service. Error code: 0x%08x\n", rc);
         return rc;
     }
 
@@ -25,7 +25,7 @@ Result nsvmInitialize(void)
 
     if (R_FAILED(rc = smGetService(&g_nsvmSrv, "ns:vm")))
     {
-        printf("Could not obtain ns:vm service. Error code: 0x%02x\n", rc);
+        printf("Could not obtain ns:vm service. Error code: 0x%08x\n", rc);
         return rc;
     }
 

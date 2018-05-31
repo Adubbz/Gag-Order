@@ -1,9 +1,12 @@
 #pragma once
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <switch.h>
 
 #define SET_MAX_NAME_SIZE 0x30
+
+bool g_nsvmInitialized;
 
 Service g_nsvmSrv;
 Service g_pmshellSrv;

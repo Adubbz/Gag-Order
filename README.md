@@ -4,7 +4,7 @@ A homebrew application which patches the "Supernag" on the Nintendo Switch.
 ## Installation
 Place the gag-order in the "switch" folder on your sd card, and run using the homebrew menu.
 
-# Download
+## Download
 https://github.com/Adubbz/Gag-Order/releases/latest
 
 ## Credits

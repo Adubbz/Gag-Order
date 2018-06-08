@@ -6,7 +6,6 @@
 #include <switch.h>
 
 #include "diagnostics.h"
-#include "goipc.h"
 #include "io.h"
 #include "patching.h"
 
@@ -154,9 +153,9 @@ int main(int argc, char **argv)
         goto loop_input;
     }
 
-    if (R_FAILED(rc = goipcInitialize()))
+    if (R_FAILED(rc = setsysInitialize()))
     {
-        printf("Failed to initialize goipc. Error code: 0x%08x\n", rc);
+        printf("Failed to initialize set:sys. Error code: 0x%08x\n", rc);
         goto loop_input;
     }
 
@@ -198,11 +197,10 @@ int main(int argc, char **argv)
     printUsage();
     loopInput();
 
-    goipcExit();
-
     if (g_nsvmInitialized)
         nsvmExit();
 
+    setsysExit();
     pmshellExit();
     gfxExit();
     return rc;

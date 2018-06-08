@@ -1,6 +1,6 @@
 #include "diagnostics.h"
 
-#include "goipc.h"
+#include <stdio.h>
 
 void printDebugInfo()
 {
@@ -28,7 +28,7 @@ NagStatus checkNagStatus(void)
     }
 
     Result rc;
-    u8 needsUpdate;
+    bool needsUpdate;
 
     if (R_FAILED(rc = nsvmNeedsUpdateVulnerability(&needsUpdate)))
     {
@@ -54,7 +54,7 @@ NagStatus checkNagStatus(void)
         return FAILED;
     }
 
-    if (R_FAILED(rc = setsysGetSettingsItemValue("vulnerability", "needs_update_vulnerability_policy", &needsUpdateSetting)))
+    if (R_FAILED(rc = setsysGetSettingsItemValue("vulnerability", "needs_update_vulnerability_policy", &needsUpdateSetting, sizeof(u64))))
     {
         printf("Could not get the value of vulnerability!needs_update_vulnerability_policy! Error code: 0x%08x\n", rc);
         return FAILED;

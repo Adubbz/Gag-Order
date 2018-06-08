@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <switch.h>
 
+bool g_nsvmInitialized;
+
 typedef enum 
 {
     FAILED,

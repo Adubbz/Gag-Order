@@ -10,35 +10,29 @@ const u8 UNNAGGED_BYTES[] = { 0x16, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x
 Result patchInit(void)
 {
     Result rc;
+    FsFileSystem tmpMountedFs;
+
+    printf("Attempting to terminate ns...\n");
+    for (int attempt = 0; attempt < 100; attempt++)
+    {
+        pmshellTerminateProcessByTitleId(0x010000000000001F);
+
+        if (R_SUCCEEDED(rc = fsMount_SystemSaveData(&tmpMountedFs, 0x8000000000000049)))
+        {
+            break;
+        }
+    }
+
+    // Took too many attempts
+    if (R_FAILED(rc))
+    {
+        printf("Failed to mount system save data %016lx. Error code: 0x%08x", 0x8000000000000049, rc);
+        return rc;
+    }
 
     if (g_nsvmInitialized)
     {
-        printf("Attempting to terminate ns...\n");
-        // Wait for a second for ns to be terminated
-        // A better way of doing this would probably be to wait in a loop checking if ns is terminated
-        // But this works for now
-        time_t seconds = time(NULL);
-        while (time(NULL) - seconds < 2)
-        {
-            if (R_FAILED(rc = pmshellTerminateProcessByTitleId(0x010000000000001F)))
-            {
-                printf("Failed to terminate ns. Error code: 0x%08x\n", rc);
-                return rc;
-            }
-        }
-
         g_nsvmInitialized = false;
-    }
-
-    FsFileSystem tmpMountedFs;
-
-    if (R_FAILED(rc = fsMount_SystemSaveData(&tmpMountedFs, 0x8000000000000049)))
-    {
-        if (R_FAILED(rc = fsMount_SystemSaveData(&tmpMountedFs, 0x8000000000000049)))
-        {
-            printf("Failed to mount system save data for ns_ssversion (2nd attempt). Error code: 0x%08x\n", rc);
-            return rc;
-        }
     }
 
     // TODO: Improve this check, seems to be wrong?

@@ -134,15 +134,12 @@ void loopInput()
         if (kDown & KEY_B) 
             break;
 
-        gfxFlushBuffers();
-        gfxSwapBuffers();
-        gfxWaitForVsync();
+        consoleUpdate(NULL);
     }
 }
 
 int main(int argc, char **argv)
 {
-    gfxInitDefault();
     consoleInit(NULL);
 
     Result rc;
@@ -202,7 +199,7 @@ int main(int argc, char **argv)
 
     setsysExit();
     pmshellExit();
-    gfxExit();
+    consoleExit(NULL);
     return rc;
 }
 
